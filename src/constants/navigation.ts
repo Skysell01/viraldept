@@ -27,7 +27,6 @@ export const NAV_CTA = {
 };
 
 export const SOCIAL_LINKS = [
-  { label: "Instagram", shortCode: "IG", href: "https://instagram.com" },
-  { label: "LinkedIn", shortCode: "LI", href: "https://linkedin.com" },
+  { label: "Instagram", shortCode: "IG", href: "https://www.instagram.com/viraldept.in/" },
 ];
 
