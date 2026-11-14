@@ -140,9 +140,12 @@ export function ClosingCTA() {
       });
 
       if (!res.ok) {
-        throw new Error("Proxy error");
+        throw new Error("Proxy error status " + res.status);
       }
 
+      const data = await res.json();
+      console.log("Lead successfully submitted:", data);
+      setFormData({ name: "", email: "", handleOrWebsite: "", budget: "", message: "" });
       setFormSubmitted(true);
     } catch (err) {
       console.error("Primary proxy error, attempting direct webhook fallback:", err);
@@ -157,6 +160,8 @@ export function ClosingCTA() {
           },
           body: JSON.stringify(payload),
         });
+        console.log("Fallback lead submitted to webhook");
+        setFormData({ name: "", email: "", handleOrWebsite: "", budget: "", message: "" });
         setFormSubmitted(true);
       } catch (fallbackErr) {
         console.error("Fallback error:", fallbackErr);
@@ -459,7 +464,7 @@ export function ClosingCTA() {
                         type="text"
                         value={formData.budget}
                         onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                        placeholder={activeTab === "brand" ? "$5K - $25K+ / Sprint" : "50K+ / Lifestyle & Food"}
+                        placeholder={activeTab === "brand" ? "₹1 Lakh - ₹5 Lakhs+ / Sprint" : "50K+ / Lifestyle & Food"}
                         className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/35 focus:outline-none focus:ring-2 focus:ring-[#e57368] text-sm"
                       />
                     </div>
