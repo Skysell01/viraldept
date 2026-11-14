@@ -189,12 +189,12 @@ export function CaseStudy() {
           <div className="lg:col-span-7">
             <div className="group relative rounded-3xl overflow-hidden bg-white border border-[#8b261e]/15 shadow-[0_20px_50px_-10px_rgba(139,38,30,0.1)] transition-all duration-500 hover:shadow-[0_25px_60px_-10px_rgba(139,38,30,0.15)]">
               {/* Image Aspect Box */}
-              <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full bg-[#f4ece3] overflow-hidden">
+              <div className="relative aspect-[16/10] w-full bg-[#0c0f13] overflow-hidden">
                 <Image
                   src={BRAND_ASSETS.images.casecrushersCard}
                   alt="Case Crushers Campaign Showcase"
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="object-contain p-2 sm:p-4 transition-transform duration-700 group-hover:scale-[1.02]"
                   sizes="(max-width: 1024px) 100vw, 60vw"
                   priority
                 />
