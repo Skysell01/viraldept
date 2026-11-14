@@ -465,10 +465,10 @@ export function CaseStudy() {
                 Create My Campaign
               </Button>
               <Link
-                href="#services"
+                href="#contact"
                 className="inline-flex items-center justify-center gap-2 text-xs font-medium text-white/70 hover:text-white py-2 transition-colors"
               >
-                <span>Learn about our 4-step process</span>
+                <span>Talk to our campaign team</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>

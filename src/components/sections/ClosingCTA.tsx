@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   Mail,
   HelpCircle,
+  Loader2,
 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
@@ -105,10 +106,67 @@ export function ClosingCTA() {
     budget: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormSubmitted(true);
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    const payload = {
+      type: activeTab, // "brand" or "influencer"
+      name: formData.name,
+      email: formData.email,
+      handleOrWebsite: formData.handleOrWebsite,
+      budget: formData.budget,
+      message: formData.message,
+      submittedAt: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+    };
+
+    // Google Apps Script Webhook URL (configured via environment variable or direct hook)
+    const webhookUrl =
+      process.env.NEXT_PUBLIC_GOOGLE_SHEET_WEBHOOK ||
+      "https://script.google.com/macros/s/AKfycbyJAH-XedJTAwe8SKQWZ-RI_xh-NzUHf-Q9koKawNgnlmLUCF0Z0lmjC7ufFWPRfSry/exec";
+
+    try {
+      // Primary: Secure same-origin Next.js API proxy to avoid browser CORS / redirect issues
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        throw new Error("Proxy error");
+      }
+
+      setFormSubmitted(true);
+    } catch (err) {
+      console.error("Primary proxy error, attempting direct webhook fallback:", err);
+
+      // Secondary Fallback: Direct Webhook invocation using text/plain (avoids CORS preflight)
+      try {
+        await fetch(webhookUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+          body: JSON.stringify(payload),
+        });
+        setFormSubmitted(true);
+      } catch (fallbackErr) {
+        console.error("Fallback error:", fallbackErr);
+        setSubmitError(
+          "There was a temporary issue sending your inquiry. Please try again or reach out to hello@viraldept.in"
+        );
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -424,6 +482,12 @@ export function ClosingCTA() {
                     />
                   </div>
 
+                  {submitError && (
+                    <div className="p-3.5 rounded-xl bg-red-500/20 border border-red-500/30 text-red-200 text-xs">
+                      {submitError}
+                    </div>
+                  )}
+
                   <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p className="text-xs text-white/50">
                       We protect your privacy. Zero spam guaranteed.
@@ -433,10 +497,20 @@ export function ClosingCTA() {
                       type="submit"
                       variant="primary"
                       size="lg"
+                      disabled={isSubmitting}
                       className="w-full sm:w-auto px-8"
-                      withArrow
+                      withArrow={!isSubmitting}
                     >
-                      {activeTab === "brand" ? "Submit Campaign Inquiry" : "Apply to Creator Roster"}
+                      {isSubmitting ? (
+                        <span className="flex items-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin text-white" />
+                          <span>Submitting...</span>
+                        </span>
+                      ) : activeTab === "brand" ? (
+                        "Submit Campaign Inquiry"
+                      ) : (
+                        "Apply to Creator Roster"
+                      )}
                     </Button>
                   </div>
                 </form>
