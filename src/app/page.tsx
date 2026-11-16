@@ -6,6 +6,7 @@ import { ServicesSection } from "@/components/sections/ServicesSection";
 import { CaseStudy } from "@/components/sections/CaseStudy";
 import { ProcessSection } from "@/components/sections/ProcessSection";
 import { ClosingCTA } from "@/components/sections/ClosingCTA";
+import { StickyCTA } from "@/components/ui/StickyCTA";
 import { Container } from "@/components/ui/Container";
 import { CheckCircle2, ShieldCheck, Zap } from "lucide-react";
 
@@ -74,9 +75,12 @@ export default function Home() {
           </Container>
         </section>
 
-        {/* Phase 8 Closing CTA: Pricing (#pricing), FAQ (#faq), Dual Brand/Influencer Contact (#contact) */}
+        {/* Phase 8 Closing CTA: FAQ (#faq), Dual Brand/Influencer Contact (#contact) */}
         <ClosingCTA />
       </main>
+
+      {/* Floating Sticky CTA on both Mobile & Desktop */}
+      <StickyCTA />
 
       {/* Footer */}
       <Footer />

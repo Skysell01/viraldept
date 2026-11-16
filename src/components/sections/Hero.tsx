@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import gsap from "gsap";
 import { ArrowRight, Sparkles, Video, Users, Building2 } from "lucide-react";
@@ -323,8 +322,13 @@ export function Hero() {
               className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-1"
             >
               {/* Brand CTA */}
-              <Link
+              <a
                 href="#contact-brand"
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    window.location.hash = "#contact-brand";
+                  }
+                }}
                 className={cn(
                   "group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full text-base font-semibold transition-all duration-300 shadow-lg cursor-pointer",
                   "bg-[#8b261e] text-[#fff8f6] hover:bg-[#731e17] hover:scale-[1.03] active:scale-[0.98]",
@@ -334,11 +338,16 @@ export function Hero() {
                 <Building2 className="w-5 h-5 text-[#f5c6c0] transition-transform duration-200 group-hover:scale-110" />
                 <span>I&apos;m a Brand</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </Link>
+              </a>
 
               {/* Influencer CTA */}
-              <Link
+              <a
                 href="#contact-influencer"
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    window.location.hash = "#contact-influencer";
+                  }
+                }}
                 className={cn(
                   "group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full text-base font-semibold transition-all duration-300 cursor-pointer",
                   "bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-white/20 hover:border-white/40 hover:scale-[1.03] active:scale-[0.98]",
@@ -348,7 +357,7 @@ export function Hero() {
                 <Users className="w-5 h-5 text-[#f5c6c0] transition-transform duration-200 group-hover:scale-110" />
                 <span>I&apos;m an Influencer</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </Link>
+              </a>
             </div>
 
             {/* Live helper status pill */}

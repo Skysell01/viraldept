@@ -48,35 +48,6 @@ const FAQS: FaqItem[] = [
   },
 ];
 
-const PRICING_TIERS = [
-  {
-    name: "Campaign Sprint",
-    tagline: "Best for targeted product launches & seasonal pushes",
-    turnaround: "4-Week Execution",
-    features: [
-      "Custom creator strategy & hook scripting",
-      "Sourcing 5–15 vetted niche creators",
-      "Complete contract & deliverable management",
-      "Full usage rights for paid whitelisting ads",
-      "Performance reporting & conversion analytics",
-    ],
-    popular: true,
-  },
-  {
-    name: "Growth Retainer",
-    tagline: "For brands seeking continuous organic momentum",
-    turnaround: "Monthly Ongoing",
-    features: [
-      "Dedicated influencer marketing team",
-      "Monthly pipeline of 15–30+ creator assets",
-      "Continuous A/B creative testing & format iterations",
-      "Ambassador program & long-term creator agreements",
-      "Real-time analytics dashboard & weekly strategy calls",
-    ],
-    popular: false,
-  },
-];
-
 export function ClosingCTA() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [activeTab, setActiveTab] = useState<"brand" | "influencer">("brand");
@@ -145,6 +116,16 @@ export function ClosingCTA() {
 
       const data = await res.json();
       console.log("Lead successfully submitted:", data);
+
+      // Track Lead event in Meta Pixel
+      if (typeof window !== "undefined" && typeof (window as unknown as { fbq?: (...args: unknown[]) => void }).fbq === "function") {
+        (window as unknown as { fbq: (...args: unknown[]) => void }).fbq("track", "Lead", {
+          content_name: activeTab === "brand" ? "Brand Inquiry" : "Creator Application",
+          content_category: activeTab,
+          currency: "INR",
+        });
+      }
+
       setFormData({ name: "", email: "", handleOrWebsite: "", budget: "", message: "" });
       setFormSubmitted(true);
     } catch (err) {
@@ -161,6 +142,16 @@ export function ClosingCTA() {
           body: JSON.stringify(payload),
         });
         console.log("Fallback lead submitted to webhook");
+
+        // Track Lead event in Meta Pixel
+        if (typeof window !== "undefined" && typeof (window as unknown as { fbq?: (...args: unknown[]) => void }).fbq === "function") {
+          (window as unknown as { fbq: (...args: unknown[]) => void }).fbq("track", "Lead", {
+            content_name: activeTab === "brand" ? "Brand Inquiry" : "Creator Application",
+            content_category: activeTab,
+            currency: "INR",
+          });
+        }
+
         setFormData({ name: "", email: "", handleOrWebsite: "", budget: "", message: "" });
         setFormSubmitted(true);
       } catch (fallbackErr) {
@@ -176,85 +167,6 @@ export function ClosingCTA() {
 
   return (
     <div className="w-full bg-[#faf7f2]">
-      {/* =========================================================================
-          PRICING / COLLABORATION MODELS (#pricing)
-          ========================================================================= */}
-      <section id="pricing" className="py-10 sm:py-14 md:py-16 border-b border-[#8b261e]/10">
-        <Container size="default">
-          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10 space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f4ece3] border border-[#8b261e]/15 text-[11px] font-semibold tracking-widest text-[#8b261e] uppercase">
-              TRANSPARENT ENGAGEMENT
-            </div>
-            <h2
-              className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#1e1614]"
-              style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}
-            >
-              Built for results, not agency fluff.
-            </h2>
-            <p className="text-sm sm:text-base text-[#524441] leading-relaxed">
-              Clear, transparent pricing with direct creator pass-through and zero hidden markups.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
-            {PRICING_TIERS.map((tier) => (
-              <div
-                key={tier.name}
-                className={cn(
-                  "relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300",
-                  tier.popular
-                    ? "bg-white border-2 border-[#8b261e] shadow-xl md:-translate-y-2 ring-1 ring-[#8b261e]/20"
-                    : "bg-white border border-[#8b261e]/15 shadow-sm hover:shadow-md"
-                )}
-              >
-                {tier.popular && (
-                  <span className="absolute -top-3.5 left-8 px-3.5 py-1 rounded-full bg-[#8b261e] text-white text-[11px] font-bold tracking-wider uppercase shadow-md">
-                    Most Popular
-                  </span>
-                )}
-
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <h3
-                      className="text-2xl font-bold text-[#1e1614]"
-                      style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}
-                    >
-                      {tier.name}
-                    </h3>
-                    <span className="px-2.5 py-1 rounded-lg bg-[#fbf0ec] text-xs font-semibold text-[#8b261e]">
-                      {tier.turnaround}
-                    </span>
-                  </div>
-
-                  <p className="text-sm text-[#524441] mb-6 leading-relaxed">
-                    {tier.tagline}
-                  </p>
-
-                  <div className="space-y-3 pt-4 border-t border-[#8b261e]/10 mb-8">
-                    {tier.features.map((feature) => (
-                      <div key={feature} className="flex items-start gap-2.5 text-xs sm:text-sm text-[#1e1614]/90">
-                        <CheckCircle2 className="w-4 h-4 text-[#8b261e] shrink-0 mt-0.5" />
-                        <span>{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <Button
-                  href="#contact"
-                  size="lg"
-                  variant={tier.popular ? "primary" : "outline"}
-                  className="w-full justify-center"
-                  withArrow
-                >
-                  Get Custom Scope
-                </Button>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
       {/* =========================================================================
           FAQ ACCORDION SECTION (#faq)
           ========================================================================= */}
